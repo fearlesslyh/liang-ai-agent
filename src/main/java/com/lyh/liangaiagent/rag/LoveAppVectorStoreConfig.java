@@ -10,11 +10,18 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * 内置的simpleVector类，向量放在内存中
+ */
 @Configuration
 public class LoveAppVectorStoreConfig {
 
     @Resource
     private LoveAppDocumentLoader loveAppDocumentLoader;
+    @Resource
+    private MyTokenTextSplitter myTokenTextSplitter;
+    @Resource
+    private MyKeyWordEnricher myKeyWordEnricher;
     
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel dashscopeEmbeddingModel) {
@@ -22,7 +29,10 @@ public class LoveAppVectorStoreConfig {
                 .build();
         // 加载文档
         List<Document> documents = loveAppDocumentLoader.loadMarkdowns();
-        simpleVectorStore.add(documents);
+        // 分割文档
+//        List<Document> splitDocuments = myTokenTextSplitter.splitDocuments(documents);
+        List<Document> enricherDocuments = myKeyWordEnricher.enrichDocuments(documents);
+        simpleVectorStore.add(enricherDocuments);
         return simpleVectorStore;
     }
 }

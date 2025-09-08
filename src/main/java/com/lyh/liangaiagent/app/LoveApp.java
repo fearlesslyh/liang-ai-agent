@@ -6,6 +6,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
@@ -75,6 +76,8 @@ public class LoveApp {
     @Resource
     private VectorStore loveAppVectorStore;
     @Resource
+    private VectorStore pgVectorStore;
+    @Resource
     private Advisor loveAppRagCloudAdvisor;
 
     public String doChatWithRag(String message, String chatId) {
@@ -85,9 +88,12 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 // 开启日志，便于观察效果
                 .advisors(new MyLoggerAdvisor())
-                // 应用知识库问答
+                // 应用本地知识库，基于PGVector问答
+                .advisors(new QuestionAnswerAdvisor(pgVectorStore))
+                // 应用本地知识库
 //                .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
-                .advisors(loveAppRagCloudAdvisor)
+                // 应用云知识库问答
+//                .advisors(loveAppRagCloudAdvisor)
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();

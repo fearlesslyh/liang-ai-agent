@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 使用阿里云百炼的云知识库
+ */
 @Configuration
 @Slf4j
 public class LoveAppRagCloudAdvisorConfig {

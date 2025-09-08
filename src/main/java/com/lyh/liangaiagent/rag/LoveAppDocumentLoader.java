@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 自定义markdown文档加载器
+ */
 @Component
 @Slf4j
 class LoveAppDocumentLoader {
