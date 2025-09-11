@@ -2,6 +2,8 @@ package com.lyh.liangaiagent.app;
 
 import com.lyh.liangaiagent.advisor.MyLoggerAdvisor;
 import com.lyh.liangaiagent.chatmemory.FileBasedChatMemory;
+import com.lyh.liangaiagent.rag.LoveAppRagCustomAdvisorFactory;
+import com.lyh.liangaiagent.rag.QueryRewriter;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -79,11 +81,15 @@ public class LoveApp {
     private VectorStore pgVectorStore;
     @Resource
     private Advisor loveAppRagCloudAdvisor;
+    @Resource
+    private QueryRewriter queryRewriter;
 
     public String doChatWithRag(String message, String chatId) {
+        //使用改写后的查询
+        String rewriter = queryRewriter.doQueryRewrite(message);
         ChatResponse chatResponse = chatClient
                 .prompt()
-                .user(message)
+                .user(rewriter)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 // 开启日志，便于观察效果
@@ -94,6 +100,7 @@ public class LoveApp {
 //                .advisors(new QuestionAnswerAdvisor(loveAppVectorStore))
                 // 应用云知识库问答
 //                .advisors(loveAppRagCloudAdvisor)
+//                .advisors(LoveAppRagCustomAdvisorFactory.createLoveAppRagCustomAdvisor(loveAppVectorStore, "单身"))
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
