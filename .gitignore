@@ -35,4 +35,4 @@ build/
 ###application-local.yml###
 application-local.yml
 ### 文件常量 ###
-src/main/java/com/lyh/liangaiagent/tools/constant/FileConstant.java
+src/main/java/com/lyh/liangaiagent/constant/FileConstant.java

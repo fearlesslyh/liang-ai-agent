@@ -1,4 +1,4 @@
-package com.lyh.liangaiagent.tools.constant;
+package com.lyh.liangaiagent.constant;
 
 public interface FileConstant {
 
