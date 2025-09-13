@@ -38,3 +38,4 @@ application-local.yml
 src/main/java/com/lyh/liangaiagent/constant/FileConstant.java
 
 src/main/resources/mcp-server.json
+src/main/resources/mcp-server.json

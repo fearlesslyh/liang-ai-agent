@@ -3,6 +3,18 @@ spring:
     name: liang-ai-agent
   profiles:
     active: local
+  # MCP 服务
+  ai:
+    mcp:
+      client:
+        request-timeout: 60s
+        sse:
+          connections:
+            server1:
+              url: http://localhost:8127
+#        stdio:
+#          servers-configuration: classpath:mcp-server.json
+
 server:
   port: 8123
   servlet:
