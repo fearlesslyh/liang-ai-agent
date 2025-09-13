@@ -36,3 +36,5 @@ build/
 application-local.yml
 ### 文件常量 ###
 src/main/java/com/lyh/liangaiagent/constant/FileConstant.java
+
+src/main/resources/mcp-server.json
