@@ -16,6 +16,7 @@ import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -79,6 +80,23 @@ public class LoveApp {
         String content = response.getResult().getOutput().getText();
         log.info("content: {}", content);
         return content;
+    }
+
+    /**
+     * AI基础对话，支持多轮对话，SSE流式返回
+     *
+     * @param message 用户发送的消息内容
+     * @param chatId  当前会话标识符，用于区分不同用户的上下文记忆
+     * @return AI 回复的文本内容
+     */
+    public Flux<String> doChatByStream(String message, String chatId) {
+        return chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .stream()
+                .content();
     }
 
     /**
@@ -180,6 +198,7 @@ public class LoveApp {
     // ai 调用 MCP 服务
     @Resource
     private ToolCallbackProvider toolCallbackProvider;
+
     public String doChatWithMcp(String message, String chatId) {
         ChatResponse chatResponse = chatClient
                 .prompt()
