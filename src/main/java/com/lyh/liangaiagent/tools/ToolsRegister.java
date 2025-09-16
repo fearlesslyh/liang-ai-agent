@@ -31,10 +31,11 @@ public class ToolsRegister {
         PDFGenerationTool pdfGenerationTool = new PDFGenerationTool();
         WebSearchTool webSearchTool = new WebSearchTool(searchApiKey);
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
+        TerminateTool terminateTool = new TerminateTool();
 
         // 将所有工具实例转换为ToolCallback数组并返回
         return ToolCallbacks.from(
-                fileOperationTool, webScrapingTool, resourceDownloadTool, pdfGenerationTool, webSearchTool, terminalOperationTool
+                fileOperationTool, webScrapingTool, resourceDownloadTool, pdfGenerationTool, webSearchTool, terminalOperationTool, terminateTool
         );
     }
 }
