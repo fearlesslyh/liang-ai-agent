@@ -1,5 +1,6 @@
 package com.lyh.liangaiagent.controller;
 
+import com.lyh.liangaiagent.agent.AiManus;
 import com.lyh.liangaiagent.app.LoveApp;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.model.ChatModel;
@@ -28,7 +29,7 @@ public class AiController {
     @Resource
     private LoveApp loveApp;
     @Resource
-    private ChatModel chatModel;
+    private ChatModel dashScopeChatModel;
     @Resource
     private ToolCallback[] tools;
 
@@ -68,7 +69,7 @@ public class AiController {
      * @param chatId  对话唯一标识符，用于维护会话上下文
      * @return 响应式流，按数据块逐步发送聊天响应
      */
-    @GetMapping(value = "/love_app/chat/server_sent_event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/love_app/chat/sse/server_sent_event", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> doChatWithSseOption2(String message, String chatId) {
         return loveApp.doChatByStream(message, chatId)
                 .map(chunk -> ServerSentEvent.<String>builder().data(chunk).build());
@@ -108,4 +109,14 @@ public class AiController {
         return emitter;
     }
 
+    /**
+     *  调用AiManus智能体。处理流式聊天请求，分块返回响应数据
+     * @param message  用户输入的聊天内容
+     * @return SseEmitter 对象，建立服务器推送事件连接
+     */
+    @GetMapping("/manus/chat")
+    public SseEmitter chatWithManus(String message){
+        AiManus aiManus = new AiManus(tools, dashScopeChatModel);
+        return aiManus.runStream(message);
+    }
 }

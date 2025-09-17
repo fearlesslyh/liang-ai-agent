@@ -29,7 +29,7 @@ public class AiManus extends ToolCallAgent{
                 If you want to stop the interaction at any point, use the `terminate` tool/function call.  
                 """;
         this.setNextStepPrompt(NEXT_STEP_PROMPT);
-        setMaxSteps(20);
+        setMaxSteps(10);
         ChatClient chatClient = ChatClient.builder(dashScopeChatModel)
                 .defaultAdvisors(new MyLoggerAdvisor())
                 .build();
